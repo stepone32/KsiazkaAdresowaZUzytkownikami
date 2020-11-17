@@ -211,8 +211,6 @@ void saveAddedAddresseeToTxtFile(vector<AdressData> dataOfListAddressee)
 void saveAddresseesViaTempTxtFile(vector<AdressData> &AddresseeList, int id)
 {
 
-    vector<AdressData>::iterator itr = AddresseeList.begin();
-
     AdressData dataOfAddresseeFromTxtFile;
 
     string lineInTxtFile;
@@ -226,7 +224,7 @@ void saveAddresseesViaTempTxtFile(vector<AdressData> &AddresseeList, int id)
         file.open("Adresaci.txt", ios::in );
     }
 
-    for(vector<AdressData>::iterator endVectorWord=AddresseeList.end(); itr!=endVectorWord; itr++)
+    for(vector<AdressData>::iterator itr=AddresseeList.begin(), endVectorWord=AddresseeList.end(); itr!=endVectorWord; itr++)
     {
         while(getline(file,lineInTxtFile,'|'))
         {
@@ -268,9 +266,15 @@ void saveAddresseesViaTempTxtFile(vector<AdressData> &AddresseeList, int id)
                 }
             }
         }
-        file.close();
-        fileTemp.close();
+
+        if(itr->idOfAdressee==id)
+        {
+            fileTemp<<itr->idOfAdressee<<'|'<<itr->idOfUser<<'|'<<itr->name<<'|'<<itr->surname<<'|'<<itr->phoneNumber<<'|'<<itr->email<<'|'<<itr->address<<'|'<<'\n';
+        }
     }
+    file.close();
+    fileTemp.close();
+
     remove("Adresaci.txt");
     rename("Adresaci_tymczasowy.txt", "Adresaci.txt");
 }
@@ -488,13 +492,12 @@ bool editAddressee(vector<AdressData> &AddresseeList, int &id, int idUser)
     bool operationOnAddressee=false;
     cout<<"Podaj id adresata: ";
     id = loadIntegerNumber();
-    vector<AdressData>::iterator itr = AddresseeList.begin();
 
     AdressData dataOfAddresseeFromTxtFile;
 
     string lineInTxtFile;
 
-    for(vector<AdressData>::iterator endVectorWord=AddresseeList.end(); itr!=endVectorWord; itr++)
+    for(vector<AdressData>::iterator  itr = AddresseeList.begin(), endVectorWord=AddresseeList.end(); itr!=endVectorWord; itr++)
     {
         if(itr->idOfAdressee==id&&itr->idOfUser==idUser)
         {
