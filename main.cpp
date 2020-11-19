@@ -208,16 +208,21 @@ void saveAddedAddresseeToTxtFile(vector<AdressData> dataOfListAddressee)
     file.close();
 }
 
+bool comp( const AdressData &l, const AdressData &r )
+{
+    return l.idOfAdressee < r.idOfAdressee;
+}
+
 void saveAddresseesViaTempTxtFile(vector<AdressData> &AddresseeList, int id)
 {
-
+    vector<AdressData> tempListOfAddresse;
     AdressData dataOfAddresseeFromTxtFile;
 
     string lineInTxtFile;
     int numberOfTheLineInTxtFile=1;
 
     fstream file, fileTemp;
-    fileTemp.open("Adresaci_tymczasowy.txt", ios::out );
+    fileTemp.open("Adresaci_tymczasowy.txt", ios::out);
 
     if(file.good()==true)
     {
@@ -256,22 +261,30 @@ void saveAddresseesViaTempTxtFile(vector<AdressData> &AddresseeList, int id)
             if(numberOfTheLineInTxtFile==8)
             {
                 numberOfTheLineInTxtFile=1;
-                if(dataOfAddresseeFromTxtFile.idOfAdressee==itr->idOfAdressee)
+                if(dataOfAddresseeFromTxtFile.idOfAdressee==itr->idOfAdressee&&itr->idOfAdressee!=id)
                 {
-                    fileTemp<<itr->idOfAdressee<<'|'<<itr->idOfUser<<'|'<<itr->name<<'|'<<itr->surname<<'|'<<itr->phoneNumber<<'|'<<itr->email<<'|'<<itr->address<<'|'<<'\n';
+                    tempListOfAddresse.push_back(*itr);
                 }
                 if(dataOfAddresseeFromTxtFile.idOfAdressee!=itr->idOfAdressee&&dataOfAddresseeFromTxtFile.idOfAdressee!=id)
                 {
-                    fileTemp<<dataOfAddresseeFromTxtFile.idOfAdressee<<'|'<<dataOfAddresseeFromTxtFile.idOfUser<<'|'<<dataOfAddresseeFromTxtFile.name<<'|'<<dataOfAddresseeFromTxtFile.surname<<'|'<<dataOfAddresseeFromTxtFile.phoneNumber<<'|'<<dataOfAddresseeFromTxtFile.email<<'|'<<dataOfAddresseeFromTxtFile.address<<'|'<<'\n';
+                    tempListOfAddresse.push_back(dataOfAddresseeFromTxtFile);
                 }
             }
         }
 
         if(itr->idOfAdressee==id)
         {
-            fileTemp<<itr->idOfAdressee<<'|'<<itr->idOfUser<<'|'<<itr->name<<'|'<<itr->surname<<'|'<<itr->phoneNumber<<'|'<<itr->email<<'|'<<itr->address<<'|'<<'\n';
+            tempListOfAddresse.push_back(*itr);
         }
     }
+
+    sort(tempListOfAddresse.begin(), tempListOfAddresse.end(), comp );
+
+    for(vector<AdressData>::iterator itr2=tempListOfAddresse.begin(), endVectorWord2=tempListOfAddresse.end(); itr2!=endVectorWord2; itr2++)
+    {
+        fileTemp<<itr2->idOfAdressee<<'|'<<itr2->idOfUser<<'|'<<itr2->name<<'|'<<itr2->surname<<'|'<<itr2->phoneNumber<<'|'<<itr2->email<<'|'<<itr2->address<<'|'<<'\n';
+    }
+
     file.close();
     fileTemp.close();
 
@@ -657,11 +670,11 @@ bool eraseAdressee(vector<AdressData> &vectorOfDeleteAddresses, int &id, int idU
             }
         }
     }
-     if(operationOnAddressee==false)
-        {
-            cout<<"Nie ma takiego adresata!"<<endl;
-            Sleep(2000);
-        }
+    if(operationOnAddressee==false)
+    {
+        cout<<"Nie ma takiego adresata!"<<endl;
+        Sleep(2000);
+    }
     return operationOnAddressee;
 }
 
