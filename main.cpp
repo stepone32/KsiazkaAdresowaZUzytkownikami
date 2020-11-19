@@ -213,10 +213,11 @@ bool comp( const AdressData &l, const AdressData &r )
     return l.idOfAdressee < r.idOfAdressee;
 }
 
-void saveAddresseesViaTempTxtFile(vector<AdressData> &AddresseeList, int id)
+void saveAddresseesViaTempTxtFile(vector<AdressData> &AddresseeList, int id, int &idOfLastAddresse)
 {
     vector<AdressData> tempListOfAddresse;
     AdressData dataOfAddresseeFromTxtFile;
+    AdressData dataOfAddresseeFromTempList;
 
     string lineInTxtFile;
     int numberOfTheLineInTxtFile=1;
@@ -279,6 +280,8 @@ void saveAddresseesViaTempTxtFile(vector<AdressData> &AddresseeList, int id)
     }
 
     sort(tempListOfAddresse.begin(), tempListOfAddresse.end(), comp );
+    dataOfAddresseeFromTempList = tempListOfAddresse.back();
+    idOfLastAddresse = dataOfAddresseeFromTempList.idOfAdressee;
 
     for(vector<AdressData>::iterator itr2=tempListOfAddresse.begin(), endVectorWord2=tempListOfAddresse.end(); itr2!=endVectorWord2; itr2++)
     {
@@ -777,7 +780,7 @@ int main()
                 displayAdresseesId(listOfAddresse);
                 resultOperation=eraseAdressee(listOfAddresse,id,idUser);
                 if(resultOperation==true)
-                    saveAddresseesViaTempTxtFile(listOfAddresse,id);
+                    saveAddresseesViaTempTxtFile(listOfAddresse,id,idOfLastAddresse);
                 menuItemSelection = '0';
             }
             break;
@@ -787,7 +790,7 @@ int main()
                 displayAdresseesId(listOfAddresse);
                 resultOperation=editAddressee(listOfAddresse,id,idUser);
                 if(resultOperation==true)
-                    saveAddresseesViaTempTxtFile(listOfAddresse,id);
+                    saveAddresseesViaTempTxtFile(listOfAddresse,id,idOfLastAddresse);
                 menuItemSelection = '0';
             }
             break;
